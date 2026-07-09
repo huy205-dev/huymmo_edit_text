@@ -44,7 +44,7 @@ export type Tool = {
   desc: string
   options?: Field[]
   custom?:
-    | 'pomodoro' | 'diff' | 'word-counter' | 'cut-string' | 'cut-line' | 'duplicates' | 'spin-text'
+    | 'diff' | 'word-counter' | 'cut-string' | 'cut-line' | 'duplicates'
     | 'totp' | 'my-ip' | 'mail-reader' | 'oauth-helper'
   /** Multi-line example shown as faded placeholder when input is empty. */
   example?: string
@@ -87,8 +87,7 @@ export const GROUPS: { id: ToolGroupId; label: string; parent: CategoryId }[] = 
 
 import {
   splitLines, joinLines, removeDiacritics, unescapeSep, pickIndices,
-  parseCsvLine, sortKeys, flatten,
-  parseLooseNumber, formatNumber
+  parseCsvLine, sortKeys, flatten
 } from './useTextOps'
 
 export const TOOLS: Tool[] = [
@@ -140,48 +139,6 @@ chuyển đổi định dạng tiếng Việt`,
     id: 'text-diff', group: 'core', name: 'Text Diff', icon: 'i-lucide-git-compare',
     desc: 'So sánh hai đoạn văn bản và highlight phần thêm / xóa.',
     custom: 'diff'
-  },
-  {
-    id: 'spin-text', group: 'extra', name: 'Spin Text', icon: 'i-lucide-shuffle',
-    desc: 'Sinh hàng loạt biến thể nội dung từ mẫu chứa {lựa chọn 1|lựa chọn 2|...}. Hỗ trợ lồng nhau.',
-    custom: 'spin-text'
-  },
-  {
-    id: 'text-type', group: 'core', name: 'Loại text', icon: 'i-lucide-shapes',
-    desc: 'Phân loại từng dòng: số, email, URL, SĐT — hoặc chỉ giữ đúng loại bạn cần.',
-    example: `nguyen.an@gmail.com
-0987654321
-https://example.com/page
-1234567890
-Đây là một dòng text bình thường
-+84-901-234-567
-support@company.vn`,
-    options: [
-      { type: 'segment', key: 'pick', label: 'Giữ loại', value: 'all', items: [
-        { value: 'all', label: 'Phân loại' },
-        { value: 'email', label: 'Email' },
-        { value: 'url', label: 'URL' },
-        { value: 'number', label: 'Số' },
-        { value: 'phoneVN', label: 'SĐT VN' }
-      ]}
-    ],
-    run(input, opt) {
-      const lines = splitLines(input)
-      const tests: Record<string, (s: string) => boolean> = {
-        email: (s) => /[\w.+-]+@[\w-]+\.[\w.-]+/.test(s),
-        url: (s) => /https?:\/\/\S+/.test(s),
-        number: (s) => /^-?\d+([.,]\d+)?$/.test(s.trim()),
-        phoneVN: (s) => /(?:\+?84|0)(3|5|7|8|9)\d{8}/.test(s.replace(/\s/g, ''))
-      }
-      if (opt.pick === 'all') {
-        return joinLines(lines.map((l) => {
-          for (const [k, fn] of Object.entries(tests)) if (fn(l)) return `[${k}]\t${l}`
-          return `[text]\t${l}`
-        }))
-      }
-      const fn = tests[opt.pick]
-      return joinLines(fn ? lines.filter(fn) : lines)
-    }
   },
 
   // ===== Lines =====
@@ -631,39 +588,6 @@ Phạm Cường,28,cuong@example.com,TP.HCM`,
     custom: 'oauth-helper'
   },
 
-  // ===== Extra =====
-  {
-    id: 'pomodoro', group: 'extra', name: 'Pomodoro', icon: 'i-lucide-timer',
-    desc: 'Đồng hồ tập trung 25/5 phút với âm báo khi hết giờ.',
-    custom: 'pomodoro'
-  },
-  {
-    id: 'calc-sub', group: 'extra', name: 'Tính Sub', icon: 'i-lucide-calculator',
-    desc: 'Tính tổng / trung bình / min-max các con số (subscriber, view, like) trên mỗi dòng.',
-    example: `1.2k
-3.5k
-12,500
-8.9k
-2m
-42,000
-1,250,000`,
-    options: [
-      { type: 'segment', key: 'mode', label: 'Chế độ', value: 'sum', items: [
-        { value: 'sum', label: 'Tổng' },
-        { value: 'avg', label: 'Trung bình' },
-        { value: 'minmax', label: 'Min/Max' }
-      ]},
-      { type: 'switch', key: 'parseShort', label: 'Hiểu k/m/b (1.2k = 1200)', value: true }
-    ],
-    run(input, opt) {
-      const nums = splitLines(input).map((l) => parseLooseNumber(l, opt.parseShort)).filter((n) => Number.isFinite(n))
-      if (nums.length === 0) return '0'
-      const sum = nums.reduce((a, b) => a + b, 0)
-      if (opt.mode === 'sum') return `Tổng: ${formatNumber(sum)}\nSố dòng: ${nums.length}`
-      if (opt.mode === 'avg') return `Trung bình: ${formatNumber(sum / nums.length)}\nTổng: ${formatNumber(sum)}\nSố dòng: ${nums.length}`
-      return `Min: ${formatNumber(Math.min(...nums))}\nMax: ${formatNumber(Math.max(...nums))}\nTổng: ${formatNumber(sum)}\nSố dòng: ${nums.length}`
-    }
-  },
 
   // ===== Text: thêm =====
   {

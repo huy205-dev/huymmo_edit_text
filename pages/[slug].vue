@@ -20,13 +20,11 @@ useHead({
   <div v-if="tool" class="px-4 lg:px-6 py-5 lg:py-7 max-w-[1280px] mx-auto w-full flex flex-col gap-4">
     <ToolHead :tool="tool" />
 
-    <LazyToolsPomodoroTool v-if="tool.custom === 'pomodoro'" />
-    <LazyToolsDiffTool v-else-if="tool.custom === 'diff'" />
+    <LazyToolsDiffTool v-if="tool.custom === 'diff'" />
     <LazyToolsWordCounterTool v-else-if="tool.custom === 'word-counter'" />
     <LazyToolsCutStringTool v-else-if="tool.custom === 'cut-string'" />
     <LazyToolsCutLineTool v-else-if="tool.custom === 'cut-line'" />
     <LazyToolsDuplicatesTool v-else-if="tool.custom === 'duplicates'" />
-    <LazyToolsSpinTextTool v-else-if="tool.custom === 'spin-text'" />
     <LazyToolsTotpTool v-else-if="tool.custom === 'totp'" />
     <LazyToolsMyIpTool v-else-if="tool.custom === 'my-ip'" />    <LazyToolsMailReaderTool v-else-if="tool.custom === 'mail-reader'" />
     <LazyToolsOAuthHelperTool v-else-if="tool.custom === 'oauth-helper'" />

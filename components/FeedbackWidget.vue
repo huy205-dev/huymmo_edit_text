@@ -211,7 +211,7 @@ const types: { value: FeedbackType; label: string; emoji: string; desc: string }
               <UInput
                 v-model="form.title"
                 size="md"
-                :placeholder="form.type === 'bug' ? 'VD: Spin Text bị crash khi nhập [r1]' : 'Tóm tắt ngắn gọn ý của bạn'"
+                :placeholder="form.type === 'bug' ? 'VD: Regex Tester lỗi khi để pattern rỗng' : 'Tóm tắt ngắn gọn ý của bạn'"
                 :class="showErrors && !titleValid ? 'ring-2 ring-red-500/40 rounded-lg' : ''"
               />
             </div>
