@@ -567,24 +567,5 @@ email3@hotmail.com|password3|M.CCC-...|9e5f94bc-..."
         </template>
       </div>
     </section>
-
-    <!-- Help -->
-    <details class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl px-4 py-3 text-[12.5px] text-neutral-600 dark:text-neutral-400">
-      <summary class="cursor-pointer font-semibold text-neutral-800 dark:text-neutral-200 select-none">
-        <UIcon name="i-lucide-help-circle" class="w-4 h-4 inline -mt-0.5 mr-1" />
-        Cách lấy refresh_token + client_id?
-      </summary>
-      <ol class="mt-3 space-y-1.5 list-decimal list-inside leading-relaxed">
-        <li>Đăng ký app ở <a class="underline" target="_blank" href="https://portal.azure.com/#view/Microsoft_AAD_RegisteredApps">Azure Portal</a> hoặc dùng client_id của tool có sẵn (ví dụ <code class="font-mono px-1 rounded bg-neutral-100 dark:bg-neutral-800">9e5f94bc-e8a4-4e73-b8be-63364c29d753</code> — Microsoft Authentication Broker).</li>
-        <li>Cấu hình <strong>Mobile/Desktop</strong> hoặc <strong>SPA</strong> redirect URI, bật permission <code class="font-mono px-1 rounded bg-neutral-100 dark:bg-neutral-800">Mail.Read</code> + <code class="font-mono px-1 rounded bg-neutral-100 dark:bg-neutral-800">offline_access</code>.</li>
-        <li>Chạy OAuth2 flow một lần để lấy <code class="font-mono px-1 rounded bg-neutral-100 dark:bg-neutral-800">refresh_token</code> (có thể dùng tab "OAuth2 / JWT" của TextKit để build URL).</li>
-        <li>Dán định dạng <code class="font-mono px-1 rounded bg-neutral-100 dark:bg-neutral-800">email|password|refresh_token|client_id</code> vào ô trên.</li>
-        <li>Tool sẽ tự refresh token mới mỗi lần bấm Đọc hòm thư — bấm <strong>Copy refresh_token mới</strong> để cập nhật lại danh sách của bạn.</li>
-      </ol>
-      <div class="mt-3 text-[11.5px] text-neutral-500 leading-relaxed">
-        <UIcon name="i-lucide-shield" class="w-3.5 h-3.5 inline -mt-0.5 mr-1" />
-        Token + password chỉ tồn tại trong tab này, không gửi đi đâu khác — toàn bộ request đến Microsoft Graph / Outlook diễn ra trực tiếp từ trình duyệt của bạn.
-      </div>
-    </details>
   </div>
 </template>

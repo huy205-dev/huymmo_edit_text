@@ -169,7 +169,6 @@ async function pasteToBulk() {
         </div>
         <div class="mt-3 text-[12px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
           <UIcon name="i-lucide-info" class="w-3.5 h-3.5 inline -mt-0.5 mr-1" />
-          Lấy secret từ QR code khi setup 2FA — bấm "Show Secret Key" hoặc "Can't scan QR" trong app gốc.
         </div>
       </section>
 

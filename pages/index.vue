@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useTools } from '~/composables/useTools'
 
-const { grouped, all } = useTools()
+const { tree, all } = useTools()
 
 useHead({
   title: 'TextKit — Tiện ích chỉnh sửa text online'
@@ -34,28 +34,34 @@ useHead({
 
     <PrivacyNote class="mb-8" />
 
-    <!-- Grid by group -->
-    <div v-for="g in grouped" :key="g.id" class="mb-10">
-      <h2 class="text-[16px] font-semibold tracking-tight mb-3">{{ g.label }}</h2>
-      <div class="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <NuxtLink
-          v-for="t in g.tools"
-          :key="t.id"
-          :to="`/${t.id}`"
-          class="group flex items-start gap-3 p-4 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl hover:border-primary-300 dark:hover:border-primary-500/40 hover:shadow-sm transition-all"
-        >
-          <div class="w-10 h-10 grid place-items-center rounded-lg bg-neutral-100 dark:bg-neutral-800 group-hover:bg-primary-100 dark:group-hover:bg-primary-500/20 text-neutral-700 dark:text-neutral-300 group-hover:text-primary-700 dark:group-hover:text-primary-300 transition-colors flex-shrink-0">
-            <UIcon :name="t.icon" class="w-5 h-5" />
-          </div>
-          <div class="min-w-0">
-            <div class="font-semibold text-[14px] tracking-tight group-hover:text-primary-700 dark:group-hover:text-primary-300 transition-colors">
-              {{ t.name }}
+    <!-- Grid theo danh mục cha → nhóm con -->
+    <div v-for="c in tree" :key="c.id" class="mb-12">
+      <div class="flex items-center gap-2 mb-4 pb-2 border-b border-neutral-200 dark:border-neutral-800">
+        <UIcon :name="c.icon" class="w-5 h-5 text-primary-500" />
+        <h2 class="text-[18px] font-bold tracking-tight">{{ c.label }}</h2>
+      </div>
+      <div v-for="g in c.groups" :key="g.id" class="mb-7">
+        <h3 class="text-[13px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-3">{{ g.label }}</h3>
+        <div class="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          <NuxtLink
+            v-for="t in g.tools"
+            :key="t.id"
+            :to="`/${t.id}`"
+            class="group flex items-start gap-3 p-4 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl hover:border-primary-300 dark:hover:border-primary-500/40 hover:shadow-sm transition-all"
+          >
+            <div class="w-10 h-10 grid place-items-center rounded-lg bg-neutral-100 dark:bg-neutral-800 group-hover:bg-primary-100 dark:group-hover:bg-primary-500/20 text-neutral-700 dark:text-neutral-300 group-hover:text-primary-700 dark:group-hover:text-primary-300 transition-colors flex-shrink-0">
+              <UIcon :name="t.icon" class="w-5 h-5" />
             </div>
-            <div class="text-[12.5px] text-neutral-500 dark:text-neutral-400 mt-0.5 line-clamp-2 leading-snug">
-              {{ t.desc }}
+            <div class="min-w-0">
+              <div class="font-semibold text-[14px] tracking-tight group-hover:text-primary-700 dark:group-hover:text-primary-300 transition-colors">
+                {{ t.name }}
+              </div>
+              <div class="text-[12.5px] text-neutral-500 dark:text-neutral-400 mt-0.5 line-clamp-2 leading-snug">
+                {{ t.desc }}
+              </div>
             </div>
-          </div>
-        </NuxtLink>
+          </NuxtLink>
+        </div>
       </div>
     </div>
   </div>
