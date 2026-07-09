@@ -4,7 +4,7 @@ import { useTools } from '~/composables/useTools'
 const { tree, all } = useTools()
 
 useHead({
-  title: 'TextKit — Tiện ích chỉnh sửa text online'
+  title: 'DevKit — Bộ công cụ online cho dev & marketer'
 })
 </script>
 
@@ -17,10 +17,10 @@ useHead({
         <span class="ml-1">{{ all.length }} tiện ích miễn phí</span>
       </UBadge>
       <h1 class="text-[32px] sm:text-[40px] font-bold tracking-tight leading-tight">
-        Bộ tiện ích <span class="text-primary-600 dark:text-primary-400">chỉnh sửa text</span> online
+        Bộ <span class="text-primary-600 dark:text-primary-400">công cụ online</span> cho dev &amp; marketer
       </h1>
       <p class="mt-3 text-[15px] text-neutral-600 dark:text-neutral-400 leading-relaxed">
-        Cắt chuỗi, lọc dòng, ghép file, JSON, Base64, đếm từ, so sánh diff, trích link… Tất cả xử lý ngay trên trình duyệt — dữ liệu không gửi đi đâu cả.
+        Xử lý text, JSON &amp; Base64, regex, UUID, mã hoá &amp; hash, mạng (subnet/SPF/DMARC), SEO, đọc mail… Phần lớn chạy ngay trên trình duyệt — dữ liệu không gửi đi đâu cả.
       </p>
       <div class="mt-5 flex items-center justify-center gap-2">
         <UButton color="primary" size="md" :to="`/${all[0].id}`" trailing-icon="i-lucide-arrow-right">

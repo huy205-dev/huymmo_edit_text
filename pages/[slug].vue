@@ -11,7 +11,7 @@ if (!tool.value) {
 }
 
 useHead({
-  title: () => `${tool.value!.name} — TextKit`,
+  title: () => `${tool.value!.name} — DevKit`,
   meta: [{ name: 'description', content: () => tool.value!.desc }]
 })
 </script>

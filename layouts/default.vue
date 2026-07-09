@@ -72,11 +72,11 @@ watch(currentSlug, () => (sidebarOpen.value = false))
         <div class="flex items-center justify-between px-4 py-3.5 border-b border-neutral-200 dark:border-neutral-800">
           <NuxtLink to="/" class="flex items-center gap-2.5">
             <div class="w-8 h-8 grid place-items-center bg-primary-500 dark:bg-primary-400 text-white rounded-lg font-bold text-[13px] tracking-tight">
-              Tk
+              Dk
             </div>
             <div>
-              <div class="font-semibold text-[14px] leading-tight tracking-tight">TextKit</div>
-              <div class="text-[11.5px] text-neutral-500 dark:text-neutral-400">Tiện ích text online</div>
+              <div class="font-semibold text-[14px] leading-tight tracking-tight">DevKit</div>
+              <div class="text-[11.5px] text-neutral-500 dark:text-neutral-400">Công cụ online</div>
             </div>
           </NuxtLink>
           <UButton

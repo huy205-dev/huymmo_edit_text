@@ -44,7 +44,7 @@ const stats = computed(() => {
           placeholder="Xin chào các bạn,
 Đây là phiên bản gốc của tài liệu.
 Chúng ta sẽ thử thay đổi một số nội dung
-và xem TextKit highlight ra sao."
+và xem DevKit highlight ra sao."
           class="flex-1 resize-none border-0 outline-0 px-4 py-3.5 font-mono text-[13px] leading-relaxed bg-transparent"
         />
       </section>
@@ -61,7 +61,7 @@ và xem TextKit highlight ra sao."
           placeholder="Xin chào mọi người,
 Đây là phiên bản MỚI của tài liệu.
 Chúng ta vừa cập nhật một số nội dung
-và xem TextKit highlight ra sao.
+và xem DevKit highlight ra sao.
 Thêm dòng mới ở cuối."
           class="flex-1 resize-none border-0 outline-0 px-4 py-3.5 font-mono text-[13px] leading-relaxed bg-transparent"
         />

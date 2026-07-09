@@ -8,14 +8,14 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: 'vi' },
-      title: 'TextKit — Tiện ích chỉnh sửa text online',
+      title: 'DevKit — Bộ công cụ online cho dev & marketer',
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         {
           name: 'description',
           content:
-            'TextKit — Bộ tiện ích chỉnh sửa text online: cắt chuỗi, lọc dòng, ghép file, JSON, Base64, Diff, Word Counter, trích link... Toàn bộ xử lý chạy trên trình duyệt.'
+            'DevKit — Bộ công cụ online: xử lý text, JSON/Base64, regex, UUID, mã hoá & hash, mạng (subnet/SPF/DMARC), SEO, đọc mail... Nhiều tiện ích chạy ngay trên trình duyệt.'
         },
         { name: 'theme-color', content: '#16a34a' }
       ],
@@ -24,7 +24,7 @@ export default defineNuxtConfig({
           rel: 'icon',
           type: 'image/svg+xml',
           href:
-            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2316a34a'/%3E%3Ctext x='50%25' y='58%25' text-anchor='middle' font-family='Inter,Arial' font-size='16' font-weight='700' fill='white'%3ETk%3C/text%3E%3C/svg%3E"
+            "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%2316a34a'/%3E%3Ctext x='50%25' y='58%25' text-anchor='middle' font-family='Inter,Arial' font-size='16' font-weight='700' fill='white'%3EDk%3C/text%3E%3C/svg%3E"
         },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },

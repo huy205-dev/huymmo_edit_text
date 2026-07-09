@@ -64,7 +64,7 @@ function copy() {
         v-model="text"
         spellcheck="false"
         rows="10"
-        placeholder="TextKit là bộ tiện ích chỉnh sửa text online miễn phí. Bạn có thể dán nội dung bài viết, email, hoặc bất kỳ đoạn văn nào để phân tích.
+        placeholder="DevKit là bộ công cụ online miễn phí. Bạn có thể dán nội dung bài viết, email, hoặc bất kỳ đoạn văn nào để phân tích.
 
 Công cụ sẽ đếm số từ, ký tự, câu, đoạn — đồng thời ước tính thời gian đọc và nói. Mật độ từ khóa cũng được phân tích để tối ưu SEO.
 

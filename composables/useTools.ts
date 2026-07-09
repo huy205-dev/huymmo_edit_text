@@ -426,7 +426,7 @@ Số 12, Ngõ 5, Đường ABC, Hà Nội`,
   {
     id: 'base64', group: 'data', name: 'Base64', icon: 'i-lucide-binary',
     desc: 'Encode / decode Base64 (hỗ trợ Unicode).',
-    example: `Xin chào TextKit! 🎉
+    example: `Xin chào DevKit! 🎉
 Đây là chuỗi mẫu để mã hóa Base64.`,
     options: [
       { type: 'segment', key: 'mode', label: 'Chế độ', value: 'encode', items: [
@@ -480,7 +480,7 @@ Số 12, Ngõ 5, Đường ABC, Hà Nội`,
   {
     id: 'hash-text', group: 'security', name: 'Hash Text', icon: 'i-lucide-shield',
     desc: 'Sinh chuỗi băm SHA-1 / SHA-256 / SHA-384 / SHA-512 từ text.',
-    example: `Hello World — TextKit demo`,
+    example: `Hello World — DevKit demo`,
     options: [
       { type: 'segment', key: 'algo', label: 'Thuật toán', value: 'SHA-256', items: [
         { value: 'SHA-1', label: 'SHA-1' },
