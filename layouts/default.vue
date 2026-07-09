@@ -31,10 +31,17 @@ const filteredTree = computed(() => {
     .filter((s) => s.categories.length > 0)
 })
 
-// Thu gọn / mở rộng từng nhóm cha (super). Khi đang tìm kiếm thì luôn mở.
-const collapsed = ref<Record<string, boolean>>({})
-const toggleCat = (id: string) => (collapsed.value[id] = !collapsed.value[id])
-const isOpen = (id: string) => !!search.value.trim() || !collapsed.value[id]
+// Accordion: mỗi lúc chỉ mở 1 nhóm cha (super) cho gọn. Tự mở nhóm chứa tool đang xem.
+const activeSuper = computed(() => {
+  const id = currentSlug.value
+  for (const s of tree) for (const c of (s as any).categories) for (const g of c.groups)
+    if (g.tools.some((t: Tool) => t.id === id)) return s.id
+  return tree[0]?.id || ''
+})
+const openSuper = ref('')
+watch(activeSuper, (v) => { if (v) openSuper.value = v }, { immediate: true })
+const toggleCat = (id: string) => (openSuper.value = openSuper.value === id ? '' : id)
+const isOpen = (id: string) => !!search.value.trim() || openSuper.value === id
 
 // Cmd/Ctrl + K to focus search
 const searchInput = ref<HTMLInputElement | null>(null)
@@ -117,15 +124,10 @@ watch(currentSlug, () => (sidebarOpen.value = false))
             </button>
 
             <div v-show="isOpen(s.id)" class="mt-0.5 pl-1.5 ml-2 border-l border-neutral-200 dark:border-neutral-800">
-              <!-- CON: category -->
-              <div v-for="c in s.categories" :key="c.id" class="mb-1.5">
-                <div class="flex items-center gap-1.5 px-2 pt-1.5 pb-1 text-[11.5px] font-semibold text-neutral-600 dark:text-neutral-300">
-                  <UIcon :name="c.icon" class="w-3.5 h-3.5 flex-shrink-0 text-neutral-400" />
-                  {{ c.label }}
-                </div>
-                <!-- CHÁU: group -->
+              <!-- CHÁU: group (bỏ tầng con cho gọn — cha đã bao hàm) -->
+              <template v-for="c in s.categories" :key="c.id">
                 <div v-for="g in c.groups" :key="g.id" class="mb-0.5">
-                  <div class="px-2 pt-1 pb-0.5 text-[10px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                  <div class="px-2 pt-1.5 pb-0.5 text-[10.5px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
                     {{ g.label }}
                   </div>
                   <NuxtLink
@@ -139,7 +141,7 @@ watch(currentSlug, () => (sidebarOpen.value = false))
                     <span class="flex-1 truncate">{{ t.name }}</span>
                   </NuxtLink>
                 </div>
-              </div>
+              </template>
             </div>
           </div>
           <div v-if="filteredTree.length === 0" class="px-4 py-6 text-center text-sm text-neutral-500 dark:text-neutral-400">
