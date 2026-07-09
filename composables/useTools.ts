@@ -56,8 +56,8 @@ export type Tool = {
 
 // Cấp 1 — nhóm CHA (siêu danh mục). Con (category) thuộc về một super qua `parent`.
 export const SUPERS: { id: SuperId; label: string; icon: string }[] = [
-  { id: 'g1', label: 'Text & Developer', icon: 'i-lucide-file-code' },
   { id: 'g2', label: 'Network & Web', icon: 'i-lucide-globe' },
+  { id: 'g1', label: 'Text & Developer', icon: 'i-lucide-file-code' },
   { id: 'g3', label: 'Utilities', icon: 'i-lucide-sparkles' }
 ]
 
