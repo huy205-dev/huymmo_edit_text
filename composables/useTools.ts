@@ -55,26 +55,26 @@ export type Tool = {
 
 // Danh mục cha (cấp 1) — nhóm con thuộc về một category qua `parent`.
 export const CATEGORIES: { id: CategoryId; label: string; icon: string }[] = [
-  { id: 'text', label: 'Văn bản', icon: 'i-lucide-type' },
-  { id: 'dev', label: 'Lập trình', icon: 'i-lucide-code-2' },
-  { id: 'netsec', label: 'Mạng & Bảo mật', icon: 'i-lucide-shield' },
+  { id: 'text', label: 'Text', icon: 'i-lucide-type' },
+  { id: 'dev', label: 'Developer', icon: 'i-lucide-code-2' },
+  { id: 'netsec', label: 'Network & Security', icon: 'i-lucide-shield' },
   { id: 'seo', label: 'SEO & Web', icon: 'i-lucide-search' },
-  { id: 'misc', label: 'Tiện ích', icon: 'i-lucide-sparkles' }
+  { id: 'misc', label: 'Utilities', icon: 'i-lucide-sparkles' }
 ]
 
 // Nhóm con (cấp 2). Thứ tự ở đây quyết định thứ tự hiển thị trong mỗi category.
 export const GROUPS: { id: ToolGroupId; label: string; parent: CategoryId }[] = [
-  { id: 'core', label: 'Cơ bản', parent: 'text' },
-  { id: 'lines', label: 'Cắt & ghép dòng', parent: 'text' },
-  { id: 'filter', label: 'Lọc nội dung', parent: 'text' },
-  { id: 'data', label: 'Encode & Dữ liệu', parent: 'dev' },
-  { id: 'devtools', label: 'Công cụ Dev', parent: 'dev' },
+  { id: 'core', label: 'Basic', parent: 'text' },
+  { id: 'lines', label: 'Lines', parent: 'text' },
+  { id: 'filter', label: 'Filter', parent: 'text' },
+  { id: 'data', label: 'Encode & Data', parent: 'dev' },
+  { id: 'devtools', label: 'Dev Tools', parent: 'dev' },
   { id: 'web', label: 'HTML & Web', parent: 'dev' },
-  { id: 'net', label: 'Tài khoản', parent: 'netsec' },
-  { id: 'security', label: 'Bảo mật', parent: 'netsec' },
-  { id: 'network', label: 'Mạng', parent: 'netsec' },
+  { id: 'net', label: 'Accounts', parent: 'netsec' },
+  { id: 'security', label: 'Security', parent: 'netsec' },
+  { id: 'network', label: 'Network', parent: 'netsec' },
   { id: 'seo', label: 'SEO', parent: 'seo' },
-  { id: 'extra', label: 'Tiện ích khác', parent: 'misc' }
+  { id: 'extra', label: 'Misc', parent: 'misc' }
 ]
 
 import {
