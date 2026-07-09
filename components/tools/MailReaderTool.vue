@@ -241,6 +241,26 @@ function extractCodes(text: string): string[] {
   return [...codes]
 }
 
+// Copy 1 mã (dùng chung cho badge & cột code bên phải). Template Vue không truy cập
+// được `navigator` global nên phải gọi qua method này.
+async function copyCode(code: string) {
+  try {
+    await navigator.clipboard.writeText(code)
+    toast.add({ title: `Đã copy ${code}`, color: 'success', icon: 'i-lucide-copy-check' })
+  } catch {
+    toast.add({ title: 'Không copy được mã', color: 'error' })
+  }
+}
+
+async function copyBody(content: string) {
+  try {
+    await navigator.clipboard.writeText(content)
+    toast.add({ title: 'Đã copy nội dung email', color: 'success', icon: 'i-lucide-copy-check' })
+  } catch {
+    toast.add({ title: 'Không copy được nội dung', color: 'error' })
+  }
+}
+
 // =============== Run ===============
 async function run() {
   loading.value = true
@@ -509,25 +529,44 @@ email3@hotmail.com|password3|M.CCC-...|9e5f94bc-..."
               <div class="text-[11.5px] text-neutral-500 dark:text-neutral-400 line-clamp-1 mt-0.5">
                 {{ m.bodyPreview || '—' }}
               </div>
-              <!-- Quick OTP detection from preview -->
-              <div v-if="extractCodes(m.subject + ' ' + m.bodyPreview).length" class="flex flex-wrap gap-1 mt-1">
+              <!-- Các mã phụ (nếu email chứa nhiều số) -->
+              <div v-if="extractCodes(m.subject + ' ' + m.bodyPreview).length > 1" class="flex flex-wrap gap-1 mt-1">
                 <UBadge
-                  v-for="c in extractCodes(m.subject + ' ' + m.bodyPreview)"
+                  v-for="c in extractCodes(m.subject + ' ' + m.bodyPreview).slice(1)"
                   :key="c"
                   color="warning"
                   variant="soft"
                   size="xs"
-                  class="font-mono"
-                  @click.stop="navigator.clipboard.writeText(c); toast.add({ title: `Đã copy ${c}`, color: 'success' })"
+                  class="font-mono cursor-pointer"
+                  @click.stop="copyCode(c)"
                 >
                   <UIcon name="i-lucide-key" class="w-3 h-3" />
                   {{ c }}
                 </UBadge>
               </div>
             </div>
+
+            <!-- Cột code (OTP) bên phải + copy nhanh -->
+            <div
+              v-if="extractCodes(m.subject + ' ' + m.bodyPreview).length"
+              class="shrink-0 self-center"
+              @click.stop="copyCode(extractCodes(m.subject + ' ' + m.bodyPreview)[0])"
+            >
+              <span
+                class="inline-flex items-center gap-1.5 font-mono text-[14px] font-bold tracking-wide px-3 py-1.5 rounded-lg border cursor-pointer transition-colors select-all
+                       bg-amber-100 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300
+                       border-amber-300/70 dark:border-amber-500/30
+                       hover:bg-amber-200 dark:hover:bg-amber-500/25"
+                :title="`Bấm để copy ${extractCodes(m.subject + ' ' + m.bodyPreview)[0]}`"
+              >
+                {{ extractCodes(m.subject + ' ' + m.bodyPreview)[0] }}
+                <UIcon name="i-lucide-copy" class="w-3.5 h-3.5 opacity-70" />
+              </span>
+            </div>
+
             <UIcon
               :name="openedMsgId === m.id ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
-              class="w-4 h-4 text-neutral-400 mt-1 shrink-0"
+              class="w-4 h-4 text-neutral-400 mt-1 shrink-0 self-center"
             />
           </button>
 
@@ -561,7 +600,7 @@ email3@hotmail.com|password3|M.CCC-...|9e5f94bc-..."
                 variant="soft"
                 size="sm"
                 class="font-mono cursor-pointer"
-                @click="navigator.clipboard.writeText(c); toast.add({ title: `Đã copy ${c}`, color: 'success' })"
+                @click="copyCode(c)"
               >
                 <UIcon name="i-lucide-key" class="w-3 h-3" />
                 {{ c }}
@@ -572,7 +611,7 @@ email3@hotmail.com|password3|M.CCC-...|9e5f94bc-..."
                 color="neutral"
                 size="xs"
                 icon="i-lucide-copy"
-                @click="navigator.clipboard.writeText(m.body!.content); toast.add({ title: 'Đã copy nội dung email', color: 'success' })"
+                @click="copyBody(m.body!.content)"
               >
                 Copy nội dung
               </UButton>
