@@ -12,21 +12,26 @@ const current = computed<Tool | undefined>(() => all.find((t) => t.id === curren
 const norm = (s: string) =>
   s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
 
-// Cây danh mục cha → con, đã lọc theo từ khóa tìm kiếm.
+// Cây 3 cấp super → category → group, đã lọc theo từ khóa tìm kiếm.
 const filteredTree = computed(() => {
   const q = norm(search.value.trim())
   if (!q) return tree
   return tree
-    .map((c) => ({
-      ...c,
-      groups: c.groups
-        .map((g) => ({ ...g, tools: g.tools.filter((t) => norm(`${t.name} ${t.desc}`).includes(q)) }))
-        .filter((g) => g.tools.length > 0)
+    .map((s) => ({
+      ...s,
+      categories: s.categories
+        .map((c) => ({
+          ...c,
+          groups: c.groups
+            .map((g) => ({ ...g, tools: g.tools.filter((t) => norm(`${t.name} ${t.desc}`).includes(q)) }))
+            .filter((g) => g.tools.length > 0)
+        }))
+        .filter((c) => c.groups.length > 0)
     }))
-    .filter((c) => c.groups.length > 0)
+    .filter((s) => s.categories.length > 0)
 })
 
-// Thu gọn / mở rộng từng danh mục cha.
+// Thu gọn / mở rộng từng nhóm cha (super). Khi đang tìm kiếm thì luôn mở.
 const collapsed = ref<Record<string, boolean>>({})
 const toggleCat = (id: string) => (collapsed.value[id] = !collapsed.value[id])
 const isOpen = (id: string) => !!search.value.trim() || !collapsed.value[id]
@@ -94,38 +99,46 @@ watch(currentSlug, () => (sidebarOpen.value = false))
           </UInput>
         </div>
 
-        <!-- Tool list — danh mục cha → nhóm con → tiện ích -->
+        <!-- Tool list — 3 cấp: cha (super) → con (category) → cháu (group) → tiện ích -->
         <nav class="flex-1 overflow-y-auto px-2 pt-2 pb-3">
-          <div v-for="c in filteredTree" :key="c.id" class="mb-1.5">
-            <!-- Danh mục cha (bấm để thu gọn) -->
+          <div v-for="s in filteredTree" :key="s.id" class="mb-2">
+            <!-- CHA: super (bấm để thu gọn) -->
             <button
               type="button"
               class="w-full flex items-center gap-2 px-3 py-2 rounded-md text-[12px] font-bold uppercase tracking-wide text-neutral-700 dark:text-neutral-200 hover:bg-neutral-200/50 dark:hover:bg-neutral-800/60 transition-colors"
-              @click="toggleCat(c.id)"
+              @click="toggleCat(s.id)"
             >
-              <UIcon :name="c.icon" class="w-4 h-4 flex-shrink-0 text-primary-500" />
-              <span class="flex-1 text-left">{{ c.label }}</span>
+              <UIcon :name="s.icon" class="w-4 h-4 flex-shrink-0 text-primary-500" />
+              <span class="flex-1 text-left">{{ s.label }}</span>
               <UIcon
-                :name="isOpen(c.id) ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'"
+                :name="isOpen(s.id) ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'"
                 class="w-3.5 h-3.5 text-neutral-400"
               />
             </button>
 
-            <div v-show="isOpen(c.id)" class="mt-0.5">
-              <div v-for="g in c.groups" :key="g.id" class="mb-1">
-                <div class="px-3 pt-1.5 pb-1 text-[10.5px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
-                  {{ g.label }}
+            <div v-show="isOpen(s.id)" class="mt-0.5 pl-1.5 ml-2 border-l border-neutral-200 dark:border-neutral-800">
+              <!-- CON: category -->
+              <div v-for="c in s.categories" :key="c.id" class="mb-1.5">
+                <div class="flex items-center gap-1.5 px-2 pt-1.5 pb-1 text-[11.5px] font-semibold text-neutral-600 dark:text-neutral-300">
+                  <UIcon :name="c.icon" class="w-3.5 h-3.5 flex-shrink-0 text-neutral-400" />
+                  {{ c.label }}
                 </div>
-                <NuxtLink
-                  v-for="t in g.tools"
-                  :key="t.id"
-                  :to="`/${t.id}`"
-                  class="flex items-center gap-2.5 pl-4 pr-3 py-1.5 rounded-md text-[13.5px] font-medium text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200/60 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors"
-                  active-class="!bg-primary-50 dark:!bg-primary-500/10 !text-primary-700 dark:!text-primary-300"
-                >
-                  <UIcon :name="t.icon" class="w-4 h-4 flex-shrink-0" />
-                  <span class="flex-1 truncate">{{ t.name }}</span>
-                </NuxtLink>
+                <!-- CHÁU: group -->
+                <div v-for="g in c.groups" :key="g.id" class="mb-0.5">
+                  <div class="px-2 pt-1 pb-0.5 text-[10px] font-semibold uppercase tracking-wider text-neutral-400 dark:text-neutral-500">
+                    {{ g.label }}
+                  </div>
+                  <NuxtLink
+                    v-for="t in g.tools"
+                    :key="t.id"
+                    :to="`/${t.id}`"
+                    class="flex items-center gap-2.5 pl-3 pr-2 py-1.5 rounded-md text-[13px] font-medium text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200/60 dark:hover:bg-neutral-800 hover:text-neutral-900 dark:hover:text-neutral-50 transition-colors"
+                    active-class="!bg-primary-50 dark:!bg-primary-500/10 !text-primary-700 dark:!text-primary-300"
+                  >
+                    <UIcon :name="t.icon" class="w-4 h-4 flex-shrink-0" />
+                    <span class="flex-1 truncate">{{ t.name }}</span>
+                  </NuxtLink>
+                </div>
               </div>
             </div>
           </div>

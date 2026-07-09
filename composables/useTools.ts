@@ -20,6 +20,7 @@ export type FieldInfo = { type: 'info'; text: string }
 export type Field =
   | FieldSwitch | FieldText | FieldNumber | FieldTextarea | FieldSegment | FieldInfo
 
+export type SuperId = 'g1' | 'g2' | 'g3'
 export type CategoryId = 'text' | 'dev' | 'netsec' | 'seo' | 'misc'
 
 export type ToolGroupId =
@@ -53,16 +54,23 @@ export type Tool = {
   onFiles?: (files: FileList, opt: Record<string, any>) => Promise<string>
 }
 
-// Danh mục cha (cấp 1) — nhóm con thuộc về một category qua `parent`.
-export const CATEGORIES: { id: CategoryId; label: string; icon: string }[] = [
-  { id: 'text', label: 'Text', icon: 'i-lucide-type' },
-  { id: 'dev', label: 'Developer', icon: 'i-lucide-code-2' },
-  { id: 'netsec', label: 'Network & Security', icon: 'i-lucide-shield' },
-  { id: 'seo', label: 'SEO & Web', icon: 'i-lucide-search' },
-  { id: 'misc', label: 'Utilities', icon: 'i-lucide-sparkles' }
+// Cấp 1 — nhóm CHA (siêu danh mục). Con (category) thuộc về một super qua `parent`.
+export const SUPERS: { id: SuperId; label: string; icon: string }[] = [
+  { id: 'g1', label: 'Text & Developer', icon: 'i-lucide-file-code' },
+  { id: 'g2', label: 'Network & Web', icon: 'i-lucide-globe' },
+  { id: 'g3', label: 'Utilities', icon: 'i-lucide-sparkles' }
 ]
 
-// Nhóm con (cấp 2). Thứ tự ở đây quyết định thứ tự hiển thị trong mỗi category.
+// Cấp 2 — danh mục CON. Cháu (group) thuộc về một category qua `parent`.
+export const CATEGORIES: { id: CategoryId; label: string; icon: string; parent: SuperId }[] = [
+  { id: 'text', label: 'Text', icon: 'i-lucide-type', parent: 'g1' },
+  { id: 'dev', label: 'Developer', icon: 'i-lucide-code-2', parent: 'g1' },
+  { id: 'netsec', label: 'Network & Security', icon: 'i-lucide-shield', parent: 'g2' },
+  { id: 'seo', label: 'SEO & Web', icon: 'i-lucide-search', parent: 'g2' },
+  { id: 'misc', label: 'Other', icon: 'i-lucide-more-horizontal', parent: 'g3' }
+]
+
+// Cấp 3 — nhóm CHÁU (chứa tool). Thứ tự quyết định thứ tự hiển thị trong mỗi category.
 export const GROUPS: { id: ToolGroupId; label: string; parent: CategoryId }[] = [
   { id: 'core', label: 'Basic', parent: 'text' },
   { id: 'lines', label: 'Lines', parent: 'text' },
@@ -1219,15 +1227,20 @@ correct-horse-battery-staple`,
 
 export const useTools = () => {
   const all = TOOLS
-  // Cây 2 cấp: category (cha) → group (con) → tools. Bỏ nhóm/category rỗng.
-  const tree = CATEGORIES.map((c) => ({
-    ...c,
-    groups: GROUPS.filter((g) => g.parent === c.id)
-      .map((g) => ({ ...g, tools: all.filter((t) => t.group === g.id) }))
-      .filter((g) => g.tools.length)
-  })).filter((c) => c.groups.length)
-  // Danh sách phẳng các nhóm con (theo thứ tự category) — dùng cho trang chủ.
-  const grouped = tree.flatMap((c) => c.groups)
+  // Cây 3 cấp: super (cha) → category (con) → group (cháu) → tools. Bỏ nhánh rỗng.
+  const tree = SUPERS.map((s) => ({
+    ...s,
+    categories: CATEGORIES.filter((c) => c.parent === s.id)
+      .map((c) => ({
+        ...c,
+        groups: GROUPS.filter((g) => g.parent === c.id)
+          .map((g) => ({ ...g, tools: all.filter((t) => t.group === g.id) }))
+          .filter((g) => g.tools.length)
+      }))
+      .filter((c) => c.groups.length)
+  })).filter((s) => s.categories.length)
+  // Danh sách phẳng các nhóm cháu (đúng thứ tự cây) — dùng cho trang chủ.
+  const grouped = tree.flatMap((s) => s.categories.flatMap((c) => c.groups))
   const findById = (id: string) => all.find((t) => t.id === id)
-  return { all, tree, grouped, groups: GROUPS, categories: CATEGORIES, findById }
+  return { all, tree, grouped, groups: GROUPS, categories: CATEGORIES, supers: SUPERS, findById }
 }
