@@ -328,10 +328,5 @@ const flag = computed(() => {
         <dd class="font-mono text-[11.5px] break-all leading-relaxed text-neutral-600 dark:text-neutral-400">{{ ua }}</dd>
       </dl>
     </section>
-
-    <div class="text-[11.5px] text-neutral-500 dark:text-neutral-400 text-center">
-      <UIcon name="i-lucide-info" class="w-3 h-3 inline -mt-0.5 mr-1" />
-      Dữ liệu chính từ <code class="font-mono">speed.cloudflare.com/meta</code> (Cloudflare network) — fallback ip.guide khi cần.
-    </div>
   </div>
 </template>

@@ -109,17 +109,6 @@ watch(currentSlug, () => (sidebarOpen.value = false))
             Không tìm thấy tiện ích.
           </div>
         </nav>
-
-        <!-- Footer -->
-        <div class="px-4 py-3 border-t border-neutral-200 dark:border-neutral-800">
-          <div class="flex items-center gap-2 text-[12px] font-medium text-neutral-700 dark:text-neutral-300">
-            <span class="w-1.5 h-1.5 rounded-full bg-primary-500 ring-2 ring-primary-500/25" />
-            Xử lý ngay trên trình duyệt
-          </div>
-          <div class="mt-1 text-[11.5px] text-neutral-500 dark:text-neutral-400 leading-relaxed">
-            Dữ liệu của bạn không được gửi đi đâu cả.
-          </div>
-        </div>
       </aside>
 
       <!-- Backdrop for mobile -->

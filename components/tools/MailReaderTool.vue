@@ -1,11 +1,10 @@
 <script setup lang="ts">
 const toast = useToast()
 
-type Mode = 'graph' | 'oauth2' | 'manual'
+type Mode = 'graph' | 'oauth2'
 const mode = ref<Mode>('graph')
 
 const bulkInput = ref('')
-const manualToken = ref('')
 const top = ref(15)
 const filter = ref('')
 const loading = ref(false)
@@ -161,38 +160,6 @@ async function readGraphOrOAuth(line: string, useGraph: boolean): Promise<Accoun
   }
 }
 
-async function readManual(): Promise<AccountResult> {
-  if (!manualToken.value.trim()) {
-    return { email: '(token thủ công)', status: 'error', error: 'Vui lòng dán access_token' }
-  }
-  try {
-    const params = new URLSearchParams({
-      $top: String(Math.max(1, Math.min(50, top.value))),
-      $select: 'id,subject,bodyPreview,from,receivedDateTime,isRead',
-      $orderby: 'receivedDateTime desc'
-    })
-    if (filter.value.trim()) params.set('$search', `"${filter.value.trim()}"`)
-    const meRes = await fetch('https://graph.microsoft.com/v1.0/me', {
-      headers: { Authorization: `Bearer ${manualToken.value.trim()}` }
-    })
-    const me: any = await meRes.json().catch(() => ({}))
-    const r = await fetch(`https://graph.microsoft.com/v1.0/me/messages?${params}`, {
-      headers: { Authorization: `Bearer ${manualToken.value.trim()}` }
-    })
-    const j: any = await r.json().catch(() => ({}))
-    if (!r.ok) return { email: me.mail || me.userPrincipalName || '?', status: 'error', error: j.error?.message || `HTTP ${r.status}` }
-    return {
-      email: me.mail || me.userPrincipalName || '(token thủ công)',
-      status: 'success',
-      messages: j.value || [],
-      accessToken: manualToken.value.trim(),
-      apiBase: 'https://graph.microsoft.com/v1.0/me/messages'
-    }
-  } catch (e: any) {
-    return { email: '(token thủ công)', status: 'error', error: e.message }
-  }
-}
-
 // Fetch full body of a single message on demand using stored access token.
 async function loadMessageBody(account: AccountResult, msgId: string) {
   if (!account.accessToken || !account.apiBase) return
@@ -266,12 +233,6 @@ async function run() {
   loading.value = true
   results.value = []
   openedMsgId.value = null
-
-  if (mode.value === 'manual') {
-    results.value = [await readManual()]
-    loading.value = false
-    return
-  }
 
   const lines = bulkInput.value.split(/\r?\n/).map((l) => l.trim()).filter(Boolean)
   if (lines.length === 0) {
@@ -359,18 +320,17 @@ const stats = computed(() => {
 
 <template>
   <div class="flex flex-col gap-4">
-    <!-- Mode toggle (Graph API / OAuth2 / Token thủ công) -->
+    <!-- Mode toggle (Graph API / OAuth2) -->
     <section class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 lg:p-5">
       <div class="text-[12.5px] font-semibold mb-3">Phương thức</div>
       <div class="flex flex-wrap gap-3">
         <label
           v-for="m in [
-            { v: 'graph',  l: 'Graph API',     d: 'Microsoft Graph (mới, ổn định)' },
-            { v: 'oauth2', l: 'OAuth2',        d: 'Outlook REST API (legacy)' },
-            { v: 'manual', l: 'Token thủ công', d: 'Dán access_token có sẵn' }
+            { v: 'graph',  l: 'Graph API' },
+            { v: 'oauth2', l: 'OAuth2' }
           ]"
           :key="m.v"
-          class="flex items-start gap-2.5 px-3 py-2 rounded-lg border cursor-pointer transition-all"
+          class="flex items-center gap-2.5 px-3 py-2 rounded-lg border cursor-pointer transition-all"
           :class="
             mode === m.v
               ? 'bg-primary-50 dark:bg-primary-500/10 border-primary-300 dark:border-primary-500/40 text-primary-800 dark:text-primary-200'
@@ -378,7 +338,7 @@ const stats = computed(() => {
           "
         >
           <div
-            class="w-5 h-5 rounded-md border-2 grid place-items-center mt-0.5 transition-colors shrink-0"
+            class="w-5 h-5 rounded-md border-2 grid place-items-center transition-colors shrink-0"
             :class="
               mode === m.v
                 ? 'bg-primary-500 border-primary-500 text-white'
@@ -388,10 +348,7 @@ const stats = computed(() => {
             <UIcon v-if="mode === m.v" name="i-lucide-check" class="w-3.5 h-3.5" />
           </div>
           <input type="radio" name="mail-mode" :value="m.v" v-model="mode" class="hidden" />
-          <div>
-            <div class="font-semibold text-[13px]">{{ m.l }}</div>
-            <div class="text-[11.5px] text-neutral-500 dark:text-neutral-400">{{ m.d }}</div>
-          </div>
+          <div class="font-semibold text-[13px]">{{ m.l }}</div>
         </label>
       </div>
     </section>
@@ -400,14 +357,12 @@ const stats = computed(() => {
     <section class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 lg:p-5">
       <div class="flex items-center justify-between mb-2">
         <label class="text-[12.5px] font-semibold">
-          <span v-if="mode !== 'manual'">Nhập Email <span class="text-neutral-500 font-normal">— mỗi dòng một tài khoản</span></span>
-          <span v-else>Access token (Bearer)</span>
+          Nhập Email <span class="text-neutral-500 font-normal">— mỗi dòng một tài khoản</span>
         </label>
         <UButton variant="ghost" color="neutral" size="xs" icon="i-lucide-clipboard" @click="paste">Dán</UButton>
       </div>
 
       <textarea
-        v-if="mode !== 'manual'"
         v-model="bulkInput"
         rows="8"
         spellcheck="false"
@@ -415,14 +370,6 @@ const stats = computed(() => {
 email2@outlook.com|password2|M.BBB-...|9e5f94bc-...
 email3@hotmail.com|password3|M.CCC-...|9e5f94bc-..."
         class="w-full resize-y border border-neutral-200 dark:border-neutral-700 rounded-lg px-3 py-2.5 font-mono text-[12.5px] leading-relaxed bg-white dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100"
-      />
-      <textarea
-        v-else
-        v-model="manualToken"
-        rows="3"
-        spellcheck="false"
-        placeholder="eyJ0eXAiOiJKV1QiLCJub25jZSI6..."
-        class="w-full resize-y border border-neutral-200 dark:border-neutral-700 rounded-lg px-3 py-2.5 font-mono text-[12px] leading-relaxed bg-white dark:bg-neutral-950 break-all"
       />
 
       <!-- Filter row -->

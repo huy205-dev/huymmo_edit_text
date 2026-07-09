@@ -594,7 +594,7 @@ Phạm Cường,28,cuong@example.com,TP.HCM`,
   },
 {
     id: 'mail-reader', group: 'net', name: 'Đọc Hotmail (Graph API)', icon: 'i-lucide-mail',
-    desc: 'Đọc email Hotmail/Outlook qua Microsoft Graph API — dán access_token để xem inbox.',
+    desc: 'Đọc email Hotmail/Outlook qua Microsoft Graph API.',
     custom: 'mail-reader'
   },
   {
