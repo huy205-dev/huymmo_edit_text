@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Nuxt build output
+.nuxt/
+.output/
+dist/
+.nitro/
+.cache/
+
+# Runtime data (feedback submissions — chứa email người dùng)
+data/feedbacks.jsonl
+
+# Deploy artifacts
+textkit-deploy.tar.gz
+
+# Stray build dir (tạo nhầm bởi shell redirect)
+\#/
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Editor / OS
+.DS_Store
+*.log
+
+# Claude Code toolkit (local only)
+.claude/
